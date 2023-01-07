@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
-import blogPostGenerator from "./components/blogPostGenerator";
-
+import getData from "./components/getData";
 import "./App.css";
 
 function App() {
   const [result, setResult] = useState([]);
 
   useEffect(() => {
-    setResult(blogPostGenerator());
+    getData("../public/data/blogposts.json");
   }, []);
-
-  console.log(result);
   return (
     <div className="App">
       <h1>Blog</h1>

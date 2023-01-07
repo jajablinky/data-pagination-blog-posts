@@ -16,12 +16,7 @@ app.use(cors());
 app.get("/blogposts", (req, res) => {
   // Get the page number from the query parameter
   const page = req.query.page || 1;
-  let limit;
-  if (page === 1) {
-    limit = 20;
-  } else {
-    limit = 10;
-  }
+  const limit = 10;
   // Calculate the offset for the query
   const offset = (page - 1) * 10;
 

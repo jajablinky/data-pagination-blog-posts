@@ -4,7 +4,6 @@ import "./App.css";
 function App() {
   const [blogs, setBlogs] = useState([]);
   const [page, setPage] = useState(1);
-  const [displayedBlogs, setDisplayedBlogs] = useState(blogs.slice(0, 10));
 
   useEffect(() => {
     const fetchData = async (pageNumber) => {
@@ -19,22 +18,24 @@ function App() {
       }
     };
     fetchData(page);
-  }, []);
+  }, [page]);
+
   const handleNextPage = () => {
-    const nextBlogs = blogs.slice(page * 10, (page + 1) * 10);
-    if (page === 1) {
-      setPage(page + 2);
-    }
-    if (page !== 10) {
+    if (page < 10) {
       setPage(page + 1);
     }
-    setDisplayedBlogs(nextBlogs);
+  };
+
+  const handlePrevPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
   };
 
   return (
     <div className="App">
       <h1>Blog</h1>
-      {displayedBlogs.map((blog, index) => (
+      {blogs.map((blog, index) => (
         <div key={index}>
           <h2>{blog.header}</h2>
           <p>{blog.opening}</p>
@@ -42,7 +43,7 @@ function App() {
           <p>{blog.closing}</p>
         </div>
       ))}
-      <button>Previous Page</button>
+      <button onClick={handlePrevPage}>Previous Page</button>
       <button onClick={handleNextPage}>Next Page</button>
     </div>
   );

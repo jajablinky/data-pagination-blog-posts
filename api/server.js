@@ -14,13 +14,29 @@ app.use(cors());
 
 // set up a get request using express middleware
 app.get("/blogposts", (req, res) => {
-  db.all("SELECT * FROM blogposts", (err, rows) => {
-    if (err) {
-      res.sendStatus(500);
-    } else {
-      res.json(rows);
+  // Get the page number from the query parameter
+  const page = req.query.page || 1;
+  let limit;
+  if (page === 1) {
+    limit = 20;
+  } else {
+    limit = 10;
+  }
+  // Calculate the offset for the query
+  const offset = (page - 1) * 10;
+
+  // Get the rows from the database with a limit of 10 and the calculated offset
+  db.all(
+    `SELECT * FROM blogposts LIMIT ? OFFSET ?`,
+    [limit, offset],
+    (err, rows) => {
+      if (err) {
+        res.sendStatus(500);
+      } else {
+        res.json(rows);
+      }
     }
-  });
+  );
 });
 
 // Start the server

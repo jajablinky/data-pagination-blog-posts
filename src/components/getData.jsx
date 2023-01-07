@@ -1,13 +1,14 @@
 const getData = (url) => {
-  fetch(url)
-    .then(function (response) {
-      console.log(response);
-      return response.json();
-    })
-    .then(function (myJson) {
-      console.log(myJson);
-    })
-    .catch((err) => console.log(err));
+  return new Promise((resolve, reject) => {
+    fetch(url)
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (myJson) {
+        resolve(myJson);
+      })
+      .catch((err) => reject(err));
+  });
 };
 
 export default getData;

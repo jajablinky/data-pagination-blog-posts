@@ -3,14 +3,24 @@ import getData from "./components/getData";
 import "./App.css";
 
 function App() {
-  const [result, setResult] = useState([]);
+  const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
-    getData("../public/data/blogposts.json");
+    getData("http://localhost:3000/blogposts")
+      .then((json) => {
+        setBlogs(json);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
+
   return (
     <div className="App">
       <h1>Blog</h1>
+      {console.log(blogs)}
+      <button>Previous Page</button>
+      <button>Next Page</button>
     </div>
   );
 }

@@ -2,19 +2,38 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
+  text-align: left;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
+.blog-page {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+.button-container {
+  display: flex;
+  margin: auto;
+  margin-block-start: 2em;
+  place-content: center;
 }
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+
+.page-count-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+button {
+  margin: 15px;
+}
+
+h3 {
+  margin-block-end: 0em;
+}
+
+.page-count-container p {
+  margin-block-start: 0em;
 }
 
 @keyframes logo-spin {
@@ -30,12 +49,4 @@
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }

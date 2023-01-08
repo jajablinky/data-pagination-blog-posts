@@ -35,16 +35,24 @@ function App() {
   return (
     <div className="App">
       <h1>Blog</h1>
-      {blogs.map((blog, index) => (
-        <div key={index}>
-          <h2>{blog.header}</h2>
-          <p>{blog.opening}</p>
-          <p>{blog.middle}</p>
-          <p>{blog.closing}</p>
-        </div>
-      ))}
-      <button onClick={handlePrevPage}>Previous Page</button>
-      <button onClick={handleNextPage}>Next Page</button>
+      <div className="blog-page">
+        {blogs.map((blog, index) => (
+          <div className="blog-post" key={index}>
+            <h2>{blog.header}</h2>
+            <p>{blog.opening}</p>
+            <p>{blog.middle}</p>
+            <p>{blog.closing}</p>
+          </div>
+        ))}
+      </div>
+      <div className="button-container">
+        <button onClick={handlePrevPage}>Previous Page</button>
+        <button onClick={handleNextPage}>Next Page</button>
+      </div>
+      <div className="page-count-container">
+        <h3>Page</h3>
+        <p>{page} of 10</p>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import sqlite3 from "sqlite3";
-import express from "express";
+import express, { application } from "express";
 import cors from "cors";
 
 // express is a web framework that makes it easier to handle http requests with some pre-built middleware
@@ -16,9 +16,9 @@ app.use(cors());
 app.get("/blogposts", (req, res) => {
   // Get the page number from the query parameter
   const page = req.query.page || 1;
-  const limit = 10;
+  const limit = 3;
   // Calculate the offset for the query
-  const offset = (page - 1) * 10;
+  const offset = (page - 1) * limit;
 
   // Get the rows from the database with a limit of 10 and the calculated offset
   db.all(
@@ -32,6 +32,16 @@ app.get("/blogposts", (req, res) => {
       }
     }
   );
+});
+
+app.get("/blogposts/count", (req, res) => {
+  db.get(`SELECT COUNT(*) as count FROM blogposts`, (err, row) => {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.json({ count: row.count });
+    }
+  });
 });
 
 // Start the server

@@ -1,15 +1,11 @@
 import { gql } from "@apollo/client";
 
-const aarweaveQuery = gql`
-  query {
+const AARWEAVE_QUERY = gql`
+  query ContributorQuery($contributor: String!) {
     transactions(
-      first: 1
       tags: [
         { name: "App-Name", values: ["MirrorXYZ"] }
-        {
-          name: "Original-Content-Digest"
-          values: ["GjssNdA6XK7VYynkvwDem3KYwPACSU9nDWpR5rei3hw"]
-        }
+        { name: "Contributor", values: [$contributor] }
       ]
     ) {
       edges {
@@ -21,4 +17,4 @@ const aarweaveQuery = gql`
   }
 `;
 
-export default aarweaveQuery;
+export default AARWEAVE_QUERY;

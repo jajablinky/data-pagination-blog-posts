@@ -1,74 +1,69 @@
-import React, { useState, useEffect } from "react";
+/* Dependencies */
+import React, { useState, useEffect, useCallback } from "react";
+import { useQuery } from "@apollo/client";
+
+/* Components */
+import aarweaveQuery from "./components/aarweaveQuery.jsx";
+import FakeBlogsFromServer from "./components/FakeBlogsFromServer.jsx";
 import "./App.css";
 
 function App() {
   const [blogCount, setBlogCount] = useState(0);
   const [blogs, setBlogs] = useState([]);
+  const [blogsIsLoading, setBlogsIsLoading] = useState(true);
+  const { data, loading, error } = useQuery(aarweaveQuery);
   const [page, setPage] = useState(1);
   const [countIsLoading, setCountIsLoading] = useState(true);
-  const [blogsIsLoading, setBlogsIsLoading] = useState(true);
+
+  const fetchBlogCount = useCallback(async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/blogposts/count`);
+      const json = await response.json();
+      setBlogCount(json.count);
+      setCountIsLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchBlogCount = async () => {
-      try {
-        const response = await fetch(`http://localhost:3000/blogposts/count`);
-        const json = await response.json();
-        setBlogCount(json.count);
-        setCountIsLoading(false);
-      } catch (error) {
-        console.error(error);
-      }
-    };
     fetchBlogCount();
-  }, []);
+  }, [fetchBlogCount]);
+
+  // Extract handlePagination function
+  const handlePagination = useCallback(
+    (newPage) => {
+      setPage(newPage);
+      setBlogsIsLoading(true);
+      setBlogs([]);
+    },
+    [setBlogs, setBlogsIsLoading, setPage]
+  );
 
   const totalPages = Math.ceil(blogCount / 3);
 
-  useEffect(() => {
-    const fetchData = async (pageNumber) => {
-      try {
-        const response = await fetch(
-          `http://localhost:3000/blogposts?page=${pageNumber}`
-        );
-        const json = await response.json();
-        setBlogs(json);
-        setBlogsIsLoading(false);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData(page);
-  }, [page]);
-
+  // Call handlePagination in place of setPage
   const handleNextPage = () => {
     if (page < totalPages) {
-      setPage(page + 1);
+      handlePagination(page + 1);
     }
   };
 
   const handlePrevPage = () => {
     if (page > 1) {
-      setPage(page - 1);
+      handlePagination(page - 1);
     }
   };
 
   return (
     <div className="App">
-      <h1>Blog</h1>
-      <div className="blog-page">
-        {blogsIsLoading ? (
-          <p>Loading...</p> // show loading message while count is being fetched
-        ) : (
-          blogs.map((blog, index) => (
-            <div className="blog-post" key={index}>
-              <h2>{blog.header}</h2>
-              <p>{blog.opening}</p>
-              <p>{blog.middle}</p>
-              <p>{blog.closing}</p>
-            </div>
-          ))
-        )}
-      </div>
+      <FakeBlogsFromServer
+        blogs={blogs}
+        setBlogs={setBlogs}
+        page={page}
+        blogsIsLoading={blogsIsLoading}
+        setBlogsIsLoading={setBlogsIsLoading}
+      />
       <div className="button-container">
         <button onClick={handlePrevPage}>Previous Page</button>
         <button onClick={handleNextPage}>Next Page</button>

@@ -1,18 +1,27 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
+import {
+  ReactQueryCacheProvider,
+  ReactQueryConfigProvider,
+  QueryCache,
+} from "react-query";
 import App from "./App";
 import "./index.css";
 
-const client = new ApolloClient({
-  uri: "https://arweave.dev/graphql",
-  cache: new InMemoryCache(),
-});
+const queryCache = new QueryCache();
+const config = {
+  retry: true,
+  refetchAllOnWindowFocus: false,
+  staleTime: 0,
+  cacheTime: 0,
+};
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>
+    <ReactQueryCacheProvider queryCache={queryCache}>
+      <ReactQueryConfigProvider config={config}>
+        <App />
+      </ReactQueryConfigProvider>
+    </ReactQueryCacheProvider>
   </React.StrictMode>
 );

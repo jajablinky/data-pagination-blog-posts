@@ -1,43 +1,20 @@
 /* Dependencies */
 import React, { useState, useEffect, useCallback } from "react";
-import { useQuery } from "@apollo/client";
 
 /* Components */
-import AARWEAVE_QUERY from "./components/AARWEAVE_QUERY.jsx";
-import FakeBlogsFromServer from "./components/FakeBlogsFromServer.jsx";
+import ArweaveBlogs from "./components/ArweaveBlogs.jsx";
+// import FakeBlogsFromServer from "./components/FakeBlogsFromServer.jsx";
 import "./App.css";
 
 function App() {
   const [contributor, setContributor] = useState({
-    rwx: "0xB618aaCb9DcDc21Ca69D310A6fC04674D293A193",
+    rwx: "0xbDc4199575A5FA3F19e9888C5d51Bde798F404Cc",
   });
   const [blogCount, setBlogCount] = useState(0);
   const [blogs, setBlogs] = useState([]);
   const [blogsIsLoading, setBlogsIsLoading] = useState(true);
-  const { data, loading, error } = useQuery(AARWEAVE_QUERY, {
-    variables: {
-      contributor:
-        contributor.rwx || "0xB618aaCb9DcDc21Ca69D310A6fC04674D293A193",
-    },
-  });
-
   const [page, setPage] = useState(1);
   const [countIsLoading, setCountIsLoading] = useState(true);
-
-  const fetchBlogCount = useCallback(async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/blogposts/count`);
-      const json = await response.json();
-      setBlogCount(json.count);
-      setCountIsLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchBlogCount();
-  }, [fetchBlogCount]);
 
   // Extract handlePagination function
   const handlePagination = useCallback(
@@ -64,22 +41,28 @@ function App() {
     }
   };
 
-  console.log(data);
-
   return (
     <div className="App">
-      <FakeBlogsFromServer
+      <ArweaveBlogs
+        contributor={contributor}
+        setContributor={setContributor}
+        blogs={blogs}
+        setBlogs={setBlogs}
+        blogsIsLoading={blogsIsLoading}
+        setBlogsIsLoading={setBlogsIsLoading}
+      />
+      {/* <FakeBlogsFromServer
         blogs={blogs}
         setBlogs={setBlogs}
         page={page}
         blogsIsLoading={blogsIsLoading}
         setBlogsIsLoading={setBlogsIsLoading}
-      />
+      /> */}
       <div className="button-container">
         <button onClick={handlePrevPage}>Previous Page</button>
         <button onClick={handleNextPage}>Next Page</button>
       </div>
-      <div className="page-count-container">
+      {/* <div className="page-count-container">
         <h3>Page</h3>
         {countIsLoading ? (
           <p>Loading...</p>
@@ -88,7 +71,7 @@ function App() {
             {page} of {totalPages}
           </p>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }

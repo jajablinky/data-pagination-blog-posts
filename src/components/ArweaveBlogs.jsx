@@ -1,11 +1,17 @@
 import { useEffect } from "react";
 import { useQuery } from "react-query";
+import { GraphQLClient } from "graphql-request";
 
 /* =-= COMPONENTS =-= */
 // GraphQL query
 import query from "./query";
 // Fetch Blog Data Custom Hook : Aarweave Request + State update for blogs
 import fetchBlogData from "./fetchBlogData";
+
+const graphQLClient = new GraphQLClient("https://arweave.dev/graphql", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+});
 
 const ArweaveBlogs = ({
   contributor,
@@ -15,31 +21,20 @@ const ArweaveBlogs = ({
   blogsIsLoading,
   setBlogsIsLoading,
 }) => {
-  const fetchGraphqlData = async (key, variables) => {
-    const res = await fetch("/graphql", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query,
-        variables,
-      }),
-    });
-    return res.json();
-  };
-
+  useQuery("get-posts", async () => {});
   const { data, isLoading, isError } = useQuery(
     ["transactions", contributor],
-    fetchGraphqlData,
+    async () => {
+      await graphQLClient.request(query);
+    },
     {
-      variables: {
-        contributor:
-          contributor.rwx || "0xB618aaCb9DcDc21Ca69D310A6fC04674D293A193",
-        first: 3,
-        after: null,
-      },
+      contributor:
+        contributor.rwx || "0xB618aaCb9DcDc21Ca69D310A6fC04674D293A193",
+      first: 3,
     }
   );
 
+  console.log(data);
   if (isLoading) {
     console.log("loading...");
   }
@@ -49,26 +44,26 @@ const ArweaveBlogs = ({
   }
 
   /* =-= Map out all transactionID's to new array and fetch from each blog =-= */
-  useEffect(() => {
-    if (!isLoading && data) {
-      setBlogsIsLoading(true);
-      const edges = data.transactions.edges;
-      const transactionIdBlogs = edges.map((edge) => ({
-        transactionId: edge.node.id,
-        blogNumber: edge.node.id,
-      }));
+  // useEffect(() => {
+  //   if (!isLoading && data) {
+  //     setBlogsIsLoading(true);
+  //     const edges = data.transactions.edges;
+  //     const transactionIdBlogs = edges.map((edge) => ({
+  //       transactionId: edge.node.id,
+  //       blogNumber: edge.node.id,
+  //     }));
 
-      transactionIdBlogs.forEach((blog) => {
-        fetchBlogData(blog.transactionId, setBlogs, setBlogsIsLoading);
-      });
-    }
-  }, [data, isLoading]);
+  //     transactionIdBlogs.forEach((blog) => {
+  //       fetchBlogData(blog.transactionId, setBlogs, setBlogsIsLoading);
+  //     });
+  //   }
+  // }, [data, isLoading]);
 
   return (
     <>
       <h1>Blog</h1>
       <div className="blog-page">
-        {blogsIsLoading ? (
+        {/* {blogsIsLoading ? (
           "Loading..."
         ) : (
           <div>
@@ -78,20 +73,20 @@ const ArweaveBlogs = ({
                     <>
                       <div>
                         <h2>{blog.content.title}</h2>
-                        <h3>by: {blog.authorship.contributor}</h3>
-                        {data &&
+                        <h3>by: {blog.authorship.contributor}</h3> */}
+        {/* {data &&
                         data.transactions &&
                         data.transactions.pageInfo &&
                         data.transactions.pageInfo.hasNextPage ? (
                           <button onClick={handleLoadMore}>Load More</button>
-                        ) : null}
+                        ) : null} 
                       </div>
                     </>
                   );
                 })
               : null}
           </div>
-        )}
+        )}*/}
       </div>
     </>
   );

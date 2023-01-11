@@ -1,27 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import {
-  ReactQueryCacheProvider,
-  ReactQueryConfigProvider,
-  QueryCache,
-} from "react-query";
+import { QueryClient, QueryClientProvider } from "react-query";
 import App from "./App";
 import "./index.css";
 
-const queryCache = new QueryCache();
-const config = {
-  retry: true,
-  refetchAllOnWindowFocus: false,
-  staleTime: 0,
-  cacheTime: 0,
-};
+const queryClient = new QueryClient();
 
-ReactDOM.render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ReactQueryCacheProvider queryCache={queryCache}>
-      <ReactQueryConfigProvider config={config}>
-        <App />
-      </ReactQueryConfigProvider>
-    </ReactQueryCacheProvider>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
   </React.StrictMode>
 );
